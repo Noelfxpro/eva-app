@@ -17,13 +17,14 @@ export interface Post {
   /** The exact fullMessage string that was signed (for client-side verification) */
   signedMessage: string | null
   walletAddress: string | null
+  /** Aptos transaction hash for the on-chain anchor */
+  aptosHash: string | null
+  /** Aptos network: devnet | testnet | mainnet */
+  aptosNetwork: string | null
   date: string
 }
 
 // ── In-memory fallback ────────────────────────────────────────────────────────
-// Used when Shelby env vars are not configured (local dev only).
-// NOTE: Vercel serverless functions are ephemeral — in-memory posts do NOT
-// persist between requests on Vercel. Set SHELBY_* env vars for production.
 export const memoryStore: Post[] = []
 
 export function shelbyConfigured(): boolean {

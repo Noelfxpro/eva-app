@@ -1,0 +1,12 @@
+[package]
+name = "EVARegistry"
+version = "1.0.0"
+authors = []
+
+[addresses]
+eva_registry = "0x6bca54c040a3f9c61cc3a7317dd7a498752732a7463449b90bbfa45f9c99a286"
+
+[dependencies.AptosFramework]
+git = "https://github.com/aptos-labs/aptos-core.git"
+rev = "devnet"
+subdir = "aptos-move/framework/aptos-framework"

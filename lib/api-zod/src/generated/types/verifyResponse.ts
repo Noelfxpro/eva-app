@@ -10,4 +10,9 @@ import type { Post } from './post';
 export interface VerifyResponse {
   found: boolean;
   post?: Post | null;
+  /**
+     * Whether the hash was confirmed on the Aptos blockchain
+     * @nullable
+     */
+  onChain?: boolean | null;
 }

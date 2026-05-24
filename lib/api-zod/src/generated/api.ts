@@ -29,6 +29,8 @@ export const GetFeedResponse = zod.object({
   "publicKey": zod.string().nullish(),
   "signedMessage": zod.string().nullish(),
   "walletAddress": zod.string().nullish(),
+  "aptosHash": zod.string().nullish().describe('Aptos transaction hash for the on-chain anchor'),
+  "aptosNetwork": zod.string().nullish().describe('Aptos network: devnet | testnet | mainnet'),
   "date": zod.string()
 })),
   "error": zod.string().nullish()
@@ -46,7 +48,9 @@ export const PublishPostBody = zod.object({
   "signature": zod.string().nullish(),
   "publicKey": zod.string().nullish(),
   "signedMessage": zod.string().nullish(),
-  "walletAddress": zod.string().nullish()
+  "walletAddress": zod.string().nullish(),
+  "aptosHash": zod.string().nullish(),
+  "aptosNetwork": zod.string().nullish()
 })
 
 export const PublishPostResponse = zod.object({
@@ -61,6 +65,8 @@ export const PublishPostResponse = zod.object({
   "publicKey": zod.string().nullish(),
   "signedMessage": zod.string().nullish(),
   "walletAddress": zod.string().nullish(),
+  "aptosHash": zod.string().nullish().describe('Aptos transaction hash for the on-chain anchor'),
+  "aptosNetwork": zod.string().nullish().describe('Aptos network: devnet | testnet | mainnet'),
   "date": zod.string()
 }).optional()
 })
@@ -84,8 +90,11 @@ export const VerifyPostResponse = zod.object({
   "publicKey": zod.string().nullish(),
   "signedMessage": zod.string().nullish(),
   "walletAddress": zod.string().nullish(),
+  "aptosHash": zod.string().nullish().describe('Aptos transaction hash for the on-chain anchor'),
+  "aptosNetwork": zod.string().nullish().describe('Aptos network: devnet | testnet | mainnet'),
   "date": zod.string()
-}),zod.null()]).optional()
+}),zod.null()]).optional(),
+  "onChain": zod.boolean().nullish().describe('Whether the hash was confirmed on the Aptos blockchain')
 })
 
 

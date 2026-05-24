@@ -118,6 +118,12 @@ components:
           type: ["string", "null"]
         walletAddress:
           type: ["string", "null"]
+        aptosHash:
+          type: ["string", "null"]
+          description: "Aptos transaction hash for the on-chain anchor"
+        aptosNetwork:
+          type: ["string", "null"]
+          description: "Aptos network: devnet | testnet | mainnet"
         date:
           type: string
       required:
@@ -145,6 +151,10 @@ components:
           type: ["string", "null"]
         walletAddress:
           type: ["string", "null"]
+        aptosHash:
+          type: ["string", "null"]
+        aptosNetwork:
+          type: ["string", "null"]
       required:
         - author
         - title
@@ -166,6 +176,9 @@ components:
           oneOf:
             - $ref: "#/components/schemas/Post"
             - type: "null"
+        onChain:
+          type: ["boolean", "null"]
+          description: "Whether the hash was confirmed on the Aptos blockchain"
       required:
         - found
     FeedResponse:

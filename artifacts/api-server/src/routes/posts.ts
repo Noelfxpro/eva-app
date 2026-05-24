@@ -12,6 +12,8 @@ interface Post {
   publicKey: string | null;
   signedMessage: string | null;
   walletAddress: string | null;
+  aptosHash: string | null;
+  aptosNetwork: string | null;
   date: string;
 }
 
@@ -78,9 +80,40 @@ async function savePost(post: Post): Promise<string> {
   return blobName;
 }
 
+// ── Aptos on-chain verification ───────────────────────────────────────────────
+const APTOS_NODE: Record<string, string> = {
+  devnet: "https://fullnode.devnet.aptoslabs.com/v1",
+  testnet: "https://api.testnet.aptoslabs.com/v1",
+  mainnet: "https://api.mainnet.aptoslabs.com/v1",
+};
+
+async function verifyOnChain(
+  aptosHash: string,
+  aptosNetwork: string,
+  hash: string
+): Promise<boolean> {
+  try {
+    const baseUrl = APTOS_NODE[aptosNetwork] ?? APTOS_NODE.testnet;
+    const res = await fetch(`${baseUrl}/transactions/by_hash/${aptosHash}`, {
+      headers: { Accept: "application/json" },
+      signal: AbortSignal.timeout(8000),
+    });
+    if (!res.ok) return false;
+    const txn = (await res.json()) as Record<string, unknown>;
+    const args = (txn?.payload as Record<string, unknown>)?.arguments;
+    if (!Array.isArray(args) || args.length === 0) return false;
+    const argHex = args[0] as string;
+    const h = argHex.startsWith("0x") ? argHex.slice(2) : argHex;
+    const decoded = Buffer.from(h, "hex").toString("utf8");
+    return decoded === hash.trim();
+  } catch {
+    return false;
+  }
+}
+
 // ── Routes ────────────────────────────────────────────────────────────────────
 
-router.get("/feed", async (req, res) => {
+router.get("/feed", async (_req, res) => {
   try {
     const posts = await getAllPosts();
     res.json({ posts });
@@ -91,22 +124,28 @@ router.get("/feed", async (req, res) => {
 
 router.post("/publish", async (req, res) => {
   try {
-    const { author, title, body, hash, signature, publicKey, signedMessage, walletAddress } = req.body;
+    const {
+      author, title, body, hash,
+      signature, publicKey, signedMessage, walletAddress,
+      aptosHash, aptosNetwork,
+    } = req.body;
+
     if (!author || !title || !body || !hash) {
       res.status(400).json({ error: "Missing fields" });
       return;
     }
+
     const post: Post = {
-      author,
-      title,
-      body,
-      hash,
+      author, title, body, hash,
       signature: signature || null,
       publicKey: publicKey || null,
       signedMessage: signedMessage || null,
       walletAddress: walletAddress || null,
+      aptosHash: aptosHash || null,
+      aptosNetwork: aptosNetwork || null,
       date: new Date().toISOString(),
     };
+
     const blobName = await savePost(post);
     res.json({ success: true, blobName, post });
   } catch (err: unknown) {
@@ -123,7 +162,13 @@ router.post("/verify", async (req, res) => {
     }
     const posts = await getAllPosts();
     const match = posts.find((p) => p.hash === hash.trim()) ?? null;
-    res.json({ found: match !== null, post: match });
+
+    let onChain: boolean | null = null;
+    if (match?.aptosHash && match.aptosNetwork) {
+      onChain = await verifyOnChain(match.aptosHash, match.aptosNetwork, match.hash);
+    }
+
+    res.json({ found: match !== null, post: match, onChain });
   } catch (err: unknown) {
     res.status(500).json({ error: err instanceof Error ? err.message : "Unknown error" });
   }

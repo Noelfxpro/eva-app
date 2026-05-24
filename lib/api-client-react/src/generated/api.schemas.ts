@@ -22,6 +22,16 @@ export interface Post {
   signedMessage?: string | null;
   /** @nullable */
   walletAddress?: string | null;
+  /**
+     * Aptos transaction hash for the on-chain anchor
+     * @nullable
+     */
+  aptosHash?: string | null;
+  /**
+     * Aptos network: devnet | testnet | mainnet
+     * @nullable
+     */
+  aptosNetwork?: string | null;
   date: string;
 }
 
@@ -38,6 +48,10 @@ export interface PostInput {
   signedMessage?: string | null;
   /** @nullable */
   walletAddress?: string | null;
+  /** @nullable */
+  aptosHash?: string | null;
+  /** @nullable */
+  aptosNetwork?: string | null;
 }
 
 export interface VerifyInput {
@@ -47,6 +61,11 @@ export interface VerifyInput {
 export interface VerifyResponse {
   found: boolean;
   post?: Post | null;
+  /**
+     * Whether the hash was confirmed on the Aptos blockchain
+     * @nullable
+     */
+  onChain?: boolean | null;
 }
 
 export interface FeedResponse {

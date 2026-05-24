@@ -19,4 +19,8 @@ export interface PostInput {
   signedMessage?: string | null;
   /** @nullable */
   walletAddress?: string | null;
+  /** @nullable */
+  aptosHash?: string | null;
+  /** @nullable */
+  aptosNetwork?: string | null;
 }

@@ -19,5 +19,15 @@ export interface Post {
   signedMessage?: string | null;
   /** @nullable */
   walletAddress?: string | null;
+  /**
+     * Aptos transaction hash for the on-chain anchor
+     * @nullable
+     */
+  aptosHash?: string | null;
+  /**
+     * Aptos network: devnet | testnet | mainnet
+     * @nullable
+     */
+  aptosNetwork?: string | null;
   date: string;
 }

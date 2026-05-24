@@ -3,7 +3,11 @@ import { savePost, type Post } from '../../lib/s3'
 
 export async function POST(req: NextRequest) {
   try {
-    const { author, title, body, hash, signature, walletAddress } = await req.json()
+    const {
+      author, title, body, hash,
+      signature, publicKey, signedMessage, walletAddress,
+      aptosHash, aptosNetwork,
+    } = await req.json()
 
     if (!author || !title || !body || !hash) {
       return NextResponse.json({ error: 'Missing fields' }, { status: 400 })
@@ -15,7 +19,11 @@ export async function POST(req: NextRequest) {
       body,
       hash,
       signature: signature ?? null,
+      publicKey: publicKey ?? null,
+      signedMessage: signedMessage ?? null,
       walletAddress: walletAddress ?? null,
+      aptosHash: aptosHash ?? null,
+      aptosNetwork: aptosNetwork ?? null,
       date: new Date().toISOString(),
     }
 
