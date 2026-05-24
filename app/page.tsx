@@ -279,3 +279,6 @@ export default function EVA() {
     </>
   )
                                }
+export default function Page() {
+  return <h1>TEST EVA ROUTE OK</h1>
+}
