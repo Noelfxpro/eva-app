@@ -281,9 +281,15 @@ export default function EVA() {
                   <div style={{ fontSize: 11, color: '#1e40af', fontWeight: 'bold', marginBottom: 4 }}>
                     ✓ ON-CHAIN — Aptos {aptosNetwork}
                   </div>
-                  <div style={{ ...mono, fontSize: 11, color: '#1e40af' }}>
+                  <div style={{ ...mono, fontSize: 11, color: '#1e40af', marginBottom: 6 }}>
                     {aptosHash.slice(0, 32)}…{aptosHash.slice(-12)}
                   </div>
+                  <a
+                    href={`https://explorer.aptoslabs.com/txn/${aptosHash}?network=${aptosNetwork}`}
+                    target="_blank" rel="noopener noreferrer"
+                    style={{ fontSize: 12, color: '#1d4ed8', textDecoration: 'underline' }}>
+                    View on Aptos Explorer ↗
+                  </a>
                 </div>
               )}
             </>
@@ -368,7 +374,13 @@ export default function EVA() {
                 {post.aptosHash && (
                   <div style={{ fontSize: 12, color: '#1e40af', marginTop: 4 }}>
                     <strong>Aptos Txn ({post.aptosNetwork}):</strong>{' '}
-                    <span style={mono}>{post.aptosHash.slice(0, 20)}…{post.aptosHash.slice(-10)}</span>
+                    <span style={mono}>{post.aptosHash.slice(0, 20)}…{post.aptosHash.slice(-10)}</span>{' '}
+                    <a
+                      href={`https://explorer.aptoslabs.com/txn/${post.aptosHash}?network=${post.aptosNetwork}`}
+                      target="_blank" rel="noopener noreferrer"
+                      style={{ color: '#1d4ed8', textDecoration: 'underline', fontSize: 11 }}>
+                      View ↗
+                    </a>
                   </div>
                 )}
               </div>
@@ -398,9 +410,13 @@ export default function EVA() {
                   </span>
                 )}
                 {post.aptosHash && (
-                  <span style={{ marginLeft: 6, fontSize: 11, background: '#dbeafe', color: '#1e40af', padding: '1px 6px', borderRadius: 10, fontWeight: 'bold' }}>
-                    ⛓ On-Chain
-                  </span>
+                  <a
+                    href={`https://explorer.aptoslabs.com/txn/${post.aptosHash}?network=${post.aptosNetwork}`}
+                    target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none', marginLeft: 6 }}>
+                    <span style={{ fontSize: 11, background: '#dbeafe', color: '#1e40af', padding: '1px 6px', borderRadius: 10, fontWeight: 'bold' }}>
+                      ⛓ On-Chain ↗
+                    </span>
+                  </a>
                 )}
               </p>
               <p style={{ margin: '0 0 6px', fontSize: 14 }}>{post.body}</p>
