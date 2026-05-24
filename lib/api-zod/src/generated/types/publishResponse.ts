@@ -5,7 +5,10 @@
  * EVA — Verified Authorship API
  * OpenAPI spec version: 0.1.0
  */
+import type { Post } from './post';
 
-export interface HealthStatus {
-  status: string;
+export interface PublishResponse {
+  success: boolean;
+  blobName?: string;
+  post?: Post;
 }

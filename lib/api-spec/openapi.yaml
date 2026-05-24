@@ -1,15 +1,16 @@
 openapi: 3.1.0
 info:
-  # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: EVA — Verified Authorship API
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: posts
+    description: EVA post operations
 paths:
   /healthz:
     get:
@@ -24,6 +25,50 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+  /feed:
+    get:
+      operationId: getFeed
+      tags: [posts]
+      summary: Get published posts
+      description: Returns all published posts from Shelby storage
+      responses:
+        "200":
+          description: List of posts
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FeedResponse"
+  /publish:
+    post:
+      operationId: publishPost
+      tags: [posts]
+      summary: Publish a post
+      description: Store a post with its authorship proof to Shelby storage
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PostInput"
+      responses:
+        "200":
+          description: Post published successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PublishResponse"
+        "400":
+          description: Missing fields
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 components:
   schemas:
     HealthStatus:
@@ -33,4 +78,75 @@ components:
           type: string
       required:
         - status
-
+    Post:
+      type: object
+      properties:
+        author:
+          type: string
+        title:
+          type: string
+        body:
+          type: string
+        hash:
+          type: string
+        signature:
+          type: ["string", "null"]
+        walletAddress:
+          type: ["string", "null"]
+        date:
+          type: string
+      required:
+        - author
+        - title
+        - body
+        - hash
+        - date
+    PostInput:
+      type: object
+      properties:
+        author:
+          type: string
+        title:
+          type: string
+        body:
+          type: string
+        hash:
+          type: string
+        signature:
+          type: ["string", "null"]
+        walletAddress:
+          type: ["string", "null"]
+      required:
+        - author
+        - title
+        - body
+        - hash
+    FeedResponse:
+      type: object
+      properties:
+        posts:
+          type: array
+          items:
+            $ref: "#/components/schemas/Post"
+        error:
+          type: ["string", "null"]
+      required:
+        - posts
+    PublishResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        blobName:
+          type: string
+        post:
+          $ref: "#/components/schemas/Post"
+      required:
+        - success
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+      required:
+        - error
