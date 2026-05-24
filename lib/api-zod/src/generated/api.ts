@@ -9,7 +9,6 @@ import * as zod from 'zod';
 
 
 /**
- * Returns server health status
  * @summary Health check
  */
 export const HealthCheckResponse = zod.object({
@@ -18,7 +17,6 @@ export const HealthCheckResponse = zod.object({
 
 
 /**
- * Returns all published posts from Shelby storage (or in-memory store if Shelby is not configured)
  * @summary Get published posts
  */
 export const GetFeedResponse = zod.object({
@@ -28,6 +26,8 @@ export const GetFeedResponse = zod.object({
   "body": zod.string(),
   "hash": zod.string(),
   "signature": zod.string().nullish(),
+  "publicKey": zod.string().nullish(),
+  "signedMessage": zod.string().nullish(),
   "walletAddress": zod.string().nullish(),
   "date": zod.string()
 })),
@@ -36,7 +36,6 @@ export const GetFeedResponse = zod.object({
 
 
 /**
- * Store a post with its authorship proof to Shelby storage (or in-memory store if Shelby is not configured)
  * @summary Publish a post
  */
 export const PublishPostBody = zod.object({
@@ -45,6 +44,8 @@ export const PublishPostBody = zod.object({
   "body": zod.string(),
   "hash": zod.string(),
   "signature": zod.string().nullish(),
+  "publicKey": zod.string().nullish(),
+  "signedMessage": zod.string().nullish(),
   "walletAddress": zod.string().nullish()
 })
 
@@ -57,6 +58,8 @@ export const PublishPostResponse = zod.object({
   "body": zod.string(),
   "hash": zod.string(),
   "signature": zod.string().nullish(),
+  "publicKey": zod.string().nullish(),
+  "signedMessage": zod.string().nullish(),
   "walletAddress": zod.string().nullish(),
   "date": zod.string()
 }).optional()
@@ -64,7 +67,6 @@ export const PublishPostResponse = zod.object({
 
 
 /**
- * Look up a SHA-256 hash and return the matching post if found
  * @summary Verify a post hash
  */
 export const VerifyPostBody = zod.object({
@@ -79,6 +81,8 @@ export const VerifyPostResponse = zod.object({
   "body": zod.string(),
   "hash": zod.string(),
   "signature": zod.string().nullish(),
+  "publicKey": zod.string().nullish(),
+  "signedMessage": zod.string().nullish(),
   "walletAddress": zod.string().nullish(),
   "date": zod.string()
 }),zod.null()]).optional()

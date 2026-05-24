@@ -10,16 +10,20 @@ export interface Post {
   title: string
   body: string
   hash: string
+  /** Ed25519 signature hex returned by Petra signMessage */
   signature: string | null
+  /** Ed25519 public key hex from window.aptos.account() */
+  publicKey: string | null
+  /** The exact fullMessage string that was signed (for client-side verification) */
+  signedMessage: string | null
   walletAddress: string | null
   date: string
 }
 
 // ── In-memory fallback ────────────────────────────────────────────────────────
 // Used when Shelby env vars are not configured (local dev only).
-// NOTE: Vercel serverless functions are ephemeral — each invocation may run in a
-// fresh instance, so the in-memory store does NOT persist between requests on
-// Vercel. Set the four SHELBY_* environment variables in Vercel for production.
+// NOTE: Vercel serverless functions are ephemeral — in-memory posts do NOT
+// persist between requests on Vercel. Set SHELBY_* env vars for production.
 export const memoryStore: Post[] = []
 
 export function shelbyConfigured(): boolean {
@@ -47,10 +51,7 @@ export async function getAllPosts(): Promise<Post[]> {
   }
   const s3 = makeS3Client()
   const list = await s3.send(
-    new ListObjectsV2Command({
-      Bucket: process.env.SHELBY_BUCKET,
-      Prefix: 'eva-posts/',
-    })
+    new ListObjectsV2Command({ Bucket: process.env.SHELBY_BUCKET, Prefix: 'eva-posts/' })
   )
   const posts: Post[] = []
   for (const obj of list.Contents ?? []) {

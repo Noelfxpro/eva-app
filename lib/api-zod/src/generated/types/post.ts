@@ -14,6 +14,10 @@ export interface Post {
   /** @nullable */
   signature?: string | null;
   /** @nullable */
+  publicKey?: string | null;
+  /** @nullable */
+  signedMessage?: string | null;
+  /** @nullable */
   walletAddress?: string | null;
   date: string;
 }

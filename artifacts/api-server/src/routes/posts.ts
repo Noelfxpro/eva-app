@@ -3,18 +3,19 @@ import { S3Client, ListObjectsV2Command, GetObjectCommand, PutObjectCommand } fr
 
 const router = Router();
 
-// ── In-memory fallback store (used when Shelby env vars are not set) ──────────
-
 interface Post {
   author: string;
   title: string;
   body: string;
   hash: string;
   signature: string | null;
+  publicKey: string | null;
+  signedMessage: string | null;
   walletAddress: string | null;
   date: string;
 }
 
+// ── In-memory fallback ────────────────────────────────────────────────────────
 const memoryStore: Post[] = [];
 
 function shelbyConfigured(): boolean {
@@ -32,8 +33,6 @@ function makeS3Client() {
     forcePathStyle: true,
   });
 }
-
-// ── Helpers ───────────────────────────────────────────────────────────────────
 
 async function getAllPosts(): Promise<Post[]> {
   if (!shelbyConfigured()) {
@@ -92,7 +91,7 @@ router.get("/feed", async (req, res) => {
 
 router.post("/publish", async (req, res) => {
   try {
-    const { author, title, body, hash, signature, walletAddress } = req.body;
+    const { author, title, body, hash, signature, publicKey, signedMessage, walletAddress } = req.body;
     if (!author || !title || !body || !hash) {
       res.status(400).json({ error: "Missing fields" });
       return;
@@ -103,6 +102,8 @@ router.post("/publish", async (req, res) => {
       body,
       hash,
       signature: signature || null,
+      publicKey: publicKey || null,
+      signedMessage: signedMessage || null,
       walletAddress: walletAddress || null,
       date: new Date().toISOString(),
     };
@@ -121,7 +122,7 @@ router.post("/verify", async (req, res) => {
       return;
     }
     const posts = await getAllPosts();
-    const match = posts.find((p) => p.hash === hash) ?? null;
+    const match = posts.find((p) => p.hash === hash.trim()) ?? null;
     res.json({ found: match !== null, post: match });
   } catch (err: unknown) {
     res.status(500).json({ error: err instanceof Error ? err.message : "Unknown error" });

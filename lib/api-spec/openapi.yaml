@@ -17,7 +17,6 @@ paths:
       operationId: healthCheck
       tags: [health]
       summary: Health check
-      description: Returns server health status
       responses:
         "200":
           description: Healthy
@@ -30,7 +29,6 @@ paths:
       operationId: getFeed
       tags: [posts]
       summary: Get published posts
-      description: Returns all published posts from Shelby storage (or in-memory store if Shelby is not configured)
       responses:
         "200":
           description: List of posts
@@ -43,7 +41,6 @@ paths:
       operationId: publishPost
       tags: [posts]
       summary: Publish a post
-      description: Store a post with its authorship proof to Shelby storage (or in-memory store if Shelby is not configured)
       requestBody:
         required: true
         content:
@@ -74,7 +71,6 @@ paths:
       operationId: verifyPost
       tags: [posts]
       summary: Verify a post hash
-      description: Look up a SHA-256 hash and return the matching post if found
       requestBody:
         required: true
         content:
@@ -116,6 +112,10 @@ components:
           type: string
         signature:
           type: ["string", "null"]
+        publicKey:
+          type: ["string", "null"]
+        signedMessage:
+          type: ["string", "null"]
         walletAddress:
           type: ["string", "null"]
         date:
@@ -138,6 +138,10 @@ components:
         hash:
           type: string
         signature:
+          type: ["string", "null"]
+        publicKey:
+          type: ["string", "null"]
+        signedMessage:
           type: ["string", "null"]
         walletAddress:
           type: ["string", "null"]

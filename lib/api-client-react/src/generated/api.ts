@@ -50,7 +50,6 @@ export const getHealthCheckUrl = () => {
 }
 
 /**
- * Returns server health status
  * @summary Health check
  */
 export const healthCheck = async ( options?: RequestInit): Promise<HealthStatus> => {
@@ -128,7 +127,6 @@ export const getGetFeedUrl = () => {
 }
 
 /**
- * Returns all published posts from Shelby storage (or in-memory store if Shelby is not configured)
  * @summary Get published posts
  */
 export const getFeed = async ( options?: RequestInit): Promise<FeedResponse> => {
@@ -206,7 +204,6 @@ export const getPublishPostUrl = () => {
 }
 
 /**
- * Store a post with its authorship proof to Shelby storage (or in-memory store if Shelby is not configured)
  * @summary Publish a post
  */
 export const publishPost = async (postInput: PostInput, options?: RequestInit): Promise<PublishResponse> => {
@@ -278,7 +275,6 @@ export const getVerifyPostUrl = () => {
 }
 
 /**
- * Look up a SHA-256 hash and return the matching post if found
  * @summary Verify a post hash
  */
 export const verifyPost = async (verifyInput: VerifyInput, options?: RequestInit): Promise<VerifyResponse> => {
