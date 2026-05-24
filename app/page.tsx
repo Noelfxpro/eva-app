@@ -9,6 +9,9 @@ export default function EVA() {
   const [body, setBody] = useState('')
   const [hash, setHash] = useState('')
 
+  // 🔐 WALLET STATE AJOUTÉ
+  const [wallet, setWallet] = useState<string | null>(null)
+
   const generateHash = async () => {
     const msg = author + title + body
     const enc = new TextEncoder().encode(msg)
@@ -16,6 +19,22 @@ export default function EVA() {
     const arr = Array.from(new Uint8Array(buf))
     const h = 'sha256:' + arr.map(b => b.toString(16).padStart(2, '0')).join('')
     setHash(h)
+  }
+
+  // 🔐 CONNECT WALLET AJOUTÉ
+  const connectWallet = async () => {
+    if (!window.aptos) {
+      alert("Install Petra Wallet")
+      return
+    }
+
+    try {
+      const res = await window.aptos.connect()
+      setWallet(res.address)
+      alert("Wallet connected: " + res.address)
+    } catch {
+      alert("Connection cancelled")
+    }
   }
 
   return (
@@ -31,6 +50,19 @@ export default function EVA() {
       {tab === 'publish' && (
         <div>
           <h2>Publish</h2>
+
+          {/* 🔐 WALLET BUTTON AJOUTÉ */}
+          <button onClick={connectWallet}>
+            Connect Petra Wallet
+          </button>
+
+          {wallet && (
+            <p style={{ marginTop: 10 }}>
+              Connected: {wallet}
+            </p>
+          )}
+
+          <br />
 
           <input
             placeholder="Author"
@@ -80,4 +112,4 @@ export default function EVA() {
       )}
     </div>
   )
-}
+          }
