@@ -32,6 +32,15 @@ export interface PostInput {
   walletAddress?: string | null;
 }
 
+export interface VerifyInput {
+  hash: string;
+}
+
+export interface VerifyResponse {
+  found: boolean;
+  post?: Post | null;
+}
+
 export interface FeedResponse {
   posts: Post[];
   /** @nullable */

@@ -12,3 +12,5 @@ export * from './healthStatus';
 export * from './post';
 export * from './postInput';
 export * from './publishResponse';
+export * from './verifyInput';
+export * from './verifyResponse';

@@ -24,7 +24,9 @@ import type {
   FeedResponse,
   HealthStatus,
   PostInput,
-  PublishResponse
+  PublishResponse,
+  VerifyInput,
+  VerifyResponse
 } from './api.schemas';
 
 import { customFetch } from '../custom-fetch';
@@ -126,7 +128,7 @@ export const getGetFeedUrl = () => {
 }
 
 /**
- * Returns all published posts from Shelby storage
+ * Returns all published posts from Shelby storage (or in-memory store if Shelby is not configured)
  * @summary Get published posts
  */
 export const getFeed = async ( options?: RequestInit): Promise<FeedResponse> => {
@@ -204,7 +206,7 @@ export const getPublishPostUrl = () => {
 }
 
 /**
- * Store a post with its authorship proof to Shelby storage
+ * Store a post with its authorship proof to Shelby storage (or in-memory store if Shelby is not configured)
  * @summary Publish a post
  */
 export const publishPost = async (postInput: PostInput, options?: RequestInit): Promise<PublishResponse> => {
@@ -265,5 +267,77 @@ export const usePublishPost = <TError = ErrorType<ErrorResponse>,
         TContext
       > => {
       return useMutation(getPublishPostMutationOptions(options));
+    }
+
+export const getVerifyPostUrl = () => {
+
+
+
+
+  return `/api/verify`
+}
+
+/**
+ * Look up a SHA-256 hash and return the matching post if found
+ * @summary Verify a post hash
+ */
+export const verifyPost = async (verifyInput: VerifyInput, options?: RequestInit): Promise<VerifyResponse> => {
+
+  return customFetch<VerifyResponse>(getVerifyPostUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      verifyInput,)
+  }
+);}
+
+
+
+
+export const getVerifyPostMutationOptions = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof verifyPost>>, TError,{data: BodyType<VerifyInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof verifyPost>>, TError,{data: BodyType<VerifyInput>}, TContext> => {
+
+const mutationKey = ['verifyPost'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof verifyPost>>, {data: BodyType<VerifyInput>}> = (props) => {
+          const {data} = props ?? {};
+
+          return  verifyPost(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type VerifyPostMutationResult = NonNullable<Awaited<ReturnType<typeof verifyPost>>>
+    export type VerifyPostMutationBody = BodyType<VerifyInput>
+    export type VerifyPostMutationError = ErrorType<ErrorResponse>
+
+    /**
+ * @summary Verify a post hash
+ */
+export const useVerifyPost = <TError = ErrorType<ErrorResponse>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof verifyPost>>, TError,{data: BodyType<VerifyInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof verifyPost>>,
+        TError,
+        {data: BodyType<VerifyInput>},
+        TContext
+      > => {
+      return useMutation(getVerifyPostMutationOptions(options));
     }
 

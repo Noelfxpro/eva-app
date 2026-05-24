@@ -18,7 +18,7 @@ export const HealthCheckResponse = zod.object({
 
 
 /**
- * Returns all published posts from Shelby storage
+ * Returns all published posts from Shelby storage (or in-memory store if Shelby is not configured)
  * @summary Get published posts
  */
 export const GetFeedResponse = zod.object({
@@ -36,7 +36,7 @@ export const GetFeedResponse = zod.object({
 
 
 /**
- * Store a post with its authorship proof to Shelby storage
+ * Store a post with its authorship proof to Shelby storage (or in-memory store if Shelby is not configured)
  * @summary Publish a post
  */
 export const PublishPostBody = zod.object({
@@ -60,6 +60,28 @@ export const PublishPostResponse = zod.object({
   "walletAddress": zod.string().nullish(),
   "date": zod.string()
 }).optional()
+})
+
+
+/**
+ * Look up a SHA-256 hash and return the matching post if found
+ * @summary Verify a post hash
+ */
+export const VerifyPostBody = zod.object({
+  "hash": zod.string()
+})
+
+export const VerifyPostResponse = zod.object({
+  "found": zod.boolean(),
+  "post": zod.union([zod.object({
+  "author": zod.string(),
+  "title": zod.string(),
+  "body": zod.string(),
+  "hash": zod.string(),
+  "signature": zod.string().nullish(),
+  "walletAddress": zod.string().nullish(),
+  "date": zod.string()
+}),zod.null()]).optional()
 })
 
 
