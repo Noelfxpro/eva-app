@@ -50,6 +50,9 @@ export default function EVA() {
         <div>
           <h2>Publish</h2>
 
+          {/* 🔥 TEST AJOUTÉ */}
+          <p>TEST PETRA BUTTON AREA</p>
+
           <button onClick={connectWallet}>
             Connect Petra Wallet
           </button>
@@ -84,30 +87,3 @@ export default function EVA() {
           <br />
 
           <button onClick={generateHash}>
-            Generate SHA-256
-          </button>
-
-          {hash && (
-            <p style={{ marginTop: 10 }}>
-              Hash: {hash}
-            </p>
-          )}
-        </div>
-      )}
-
-      {tab === 'verify' && (
-        <div>
-          <h2>Verify</h2>
-          <p>Next step: verification system</p>
-        </div>
-      )}
-
-      {tab === 'feed' && (
-        <div>
-          <h2>Feed</h2>
-          <p>Next step: API integration</p>
-        </div>
-      )}
-    </div>
-  )
-          }
