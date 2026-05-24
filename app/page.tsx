@@ -30,7 +30,6 @@ export default function EVA() {
     try {
       const res = await window.aptos.connect()
       setWallet(res.address)
-      alert("Wallet connected: " + res.address)
     } catch {
       alert("Connection cancelled")
     }
@@ -38,7 +37,7 @@ export default function EVA() {
 
   return (
     <div style={{ padding: 30, fontFamily: 'Arial' }}>
-      <h1>EVA 🚀 TEST LIVE</h1>
+      <h1>EVA 🚀</h1>
 
       <div style={{ display: 'flex', gap: 10, marginBottom: 20 }}>
         <button onClick={() => setTab('publish')}>Publish</button>
@@ -50,40 +49,27 @@ export default function EVA() {
         <div>
           <h2>Publish</h2>
 
-          {/* 🔥 TEST AJOUTÉ */}
-          <p>TEST PETRA BUTTON AREA</p>
-
           <button onClick={connectWallet}>
             Connect Petra Wallet
           </button>
 
-          {wallet && (
-            <p style={{ marginTop: 10 }}>
-              Connected: {wallet}
-            </p>
-          )}
+          {wallet && <p>Connected: {wallet}</p>}
 
-          <br />
+          <input placeholder="Author" value={author} onChange={e => setAuthor(e.target.value)} />
+          <input placeholder="Title" value={title} onChange={e => setTitle(e.target.value)} />
 
-          <input
-            placeholder="Author"
-            value={author}
-            onChange={e => setAuthor(e.target.value)}
-          />
-          <br />
-
-          <input
-            placeholder="Title"
-            value={title}
-            onChange={e => setTitle(e.target.value)}
-          />
-          <br />
-
-          <textarea
-            placeholder="Content"
-            value={body}
-            onChange={e => setBody(e.target.value)}
-          />
-          <br />
+          <textarea placeholder="Content" value={body} onChange={e => setBody(e.target.value)} />
 
           <button onClick={generateHash}>
+            Generate SHA-256
+          </button>
+
+          {hash && <p>{hash}</p>}
+        </div>
+      )}
+
+      {tab === 'verify' && <h2>Verify (coming)</h2>}
+      {tab === 'feed' && <h2>Feed (coming)</h2>}
+    </div>
+  )
+}
