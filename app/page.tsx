@@ -19,7 +19,10 @@ export default function EVA() {
     setHash(h)
   }
 
+  // 🔐 SAFE WALLET FUNCTION (IMPORTANT FIX BUILD VERCEL)
   const connectWallet = async () => {
+    if (typeof window === 'undefined') return
+
     if (!window.aptos) {
       alert("Install Petra Wallet")
       return
@@ -29,7 +32,7 @@ export default function EVA() {
       const res = await window.aptos.connect()
       setWallet(res.address)
       alert("Wallet connected: " + res.address)
-    } catch (e) {
+    } catch {
       alert("Connection cancelled")
     }
   }
@@ -38,16 +41,19 @@ export default function EVA() {
     <div style={{ padding: 30, fontFamily: 'Arial' }}>
       <h1>EVA 🚀</h1>
 
+      {/* NAVIGATION */}
       <div style={{ display: 'flex', gap: 10, marginBottom: 20 }}>
         <button onClick={() => setTab('publish')}>Publish</button>
         <button onClick={() => setTab('verify')}>Verify</button>
         <button onClick={() => setTab('feed')}>Feed</button>
       </div>
 
+      {/* PUBLISH */}
       {tab === 'publish' && (
         <div>
           <h2>Publish</h2>
 
+          {/* WALLET BUTTON */}
           <button onClick={connectWallet}>
             Connect Petra Wallet
           </button>
@@ -93,6 +99,7 @@ export default function EVA() {
         </div>
       )}
 
+      {/* VERIFY */}
       {tab === 'verify' && (
         <div>
           <h2>Verify</h2>
@@ -100,6 +107,7 @@ export default function EVA() {
         </div>
       )}
 
+      {/* FEED */}
       {tab === 'feed' && (
         <div>
           <h2>Feed</h2>
@@ -108,4 +116,4 @@ export default function EVA() {
       )}
     </div>
   )
-      }
+          }
