@@ -1,0 +1,212 @@
+openapi: 3.1.0
+info:
+  title: Api
+  version: 0.1.0
+  description: EVA — Verified Authorship API
+servers:
+  - url: /api
+    description: Base API path
+tags:
+  - name: health
+    description: Health operations
+  - name: posts
+    description: EVA post operations
+paths:
+  /healthz:
+    get:
+      operationId: healthCheck
+      tags: [health]
+      summary: Health check
+      responses:
+        "200":
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+  /feed:
+    get:
+      operationId: getFeed
+      tags: [posts]
+      summary: Get published posts
+      responses:
+        "200":
+          description: List of posts
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FeedResponse"
+  /publish:
+    post:
+      operationId: publishPost
+      tags: [posts]
+      summary: Publish a post
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PostInput"
+      responses:
+        "200":
+          description: Post published successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PublishResponse"
+        "400":
+          description: Missing fields
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /verify:
+    post:
+      operationId: verifyPost
+      tags: [posts]
+      summary: Verify a post hash
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/VerifyInput"
+      responses:
+        "200":
+          description: Verification result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/VerifyResponse"
+        "500":
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+components:
+  schemas:
+    HealthStatus:
+      type: object
+      properties:
+        status:
+          type: string
+      required:
+        - status
+    Post:
+      type: object
+      properties:
+        author:
+          type: string
+        title:
+          type: string
+        body:
+          type: string
+        hash:
+          type: string
+        signature:
+          type: ["string", "null"]
+        publicKey:
+          type: ["string", "null"]
+        signedMessage:
+          type: ["string", "null"]
+        walletAddress:
+          type: ["string", "null"]
+        aptosHash:
+          type: ["string", "null"]
+          description: "Aptos transaction hash for the on-chain anchor"
+        aptosNetwork:
+          type: ["string", "null"]
+          description: "Aptos network: devnet | testnet | mainnet"
+        date:
+          type: string
+      required:
+        - author
+        - title
+        - body
+        - hash
+        - date
+    PostInput:
+      type: object
+      properties:
+        author:
+          type: string
+        title:
+          type: string
+        body:
+          type: string
+        hash:
+          type: string
+        signature:
+          type: ["string", "null"]
+        publicKey:
+          type: ["string", "null"]
+        signedMessage:
+          type: ["string", "null"]
+        walletAddress:
+          type: ["string", "null"]
+        aptosHash:
+          type: ["string", "null"]
+        aptosNetwork:
+          type: ["string", "null"]
+      required:
+        - author
+        - title
+        - body
+        - hash
+    VerifyInput:
+      type: object
+      properties:
+        hash:
+          type: string
+      required:
+        - hash
+    VerifyResponse:
+      type: object
+      properties:
+        found:
+          type: boolean
+        post:
+          oneOf:
+            - $ref: "#/components/schemas/Post"
+            - type: "null"
+        onChain:
+          type: ["boolean", "null"]
+          description: "Whether the hash was confirmed on the Aptos blockchain"
+      required:
+        - found
+    FeedResponse:
+      type: object
+      properties:
+        posts:
+          type: array
+          items:
+            $ref: "#/components/schemas/Post"
+        error:
+          type: ["string", "null"]
+      required:
+        - posts
+    PublishResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        blobName:
+          type: string
+        post:
+          $ref: "#/components/schemas/Post"
+      required:
+        - success
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+      required:
+        - error
